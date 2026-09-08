@@ -187,3 +187,6 @@ include "dms/colors.kdl"
 // 取消下面这行的注释启动shorin预先准备好的blur配置
 include "blur.kdl"
 
+// DMS 生成的布局/间距配置
+include "dms/layout.kdl"
+
