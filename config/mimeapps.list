@@ -1,29 +1,3 @@
-[Default Applications]
-application/x-shellscript=org.kde.kate.desktop
-image/avif=com.interversehq.qView.desktop
-image/bmp=com.interversehq.qView.desktop
-image/gif=com.interversehq.qView.desktop
-image/heif=com.interversehq.qView.desktop
-image/jpeg=com.interversehq.qView.desktop
-image/png=com.interversehq.qView.desktop
-image/svg+xml=com.interversehq.qView.desktop
-image/webp=com.interversehq.qView.desktop
-inode/directory=org.kde.dolphin.desktop
-text/html=google-chrome.desktop
-text/x-shellscript=org.kde.kwrite.desktop
-x-scheme-handler/about=google-chrome.desktop
-x-scheme-handler/ccswitch=cc-switch-handler.desktop
-x-scheme-handler/clash=clash-verge.desktop;
-x-scheme-handler/clash-verge=clash-verge.desktop;
-x-scheme-handler/claude-cli=claude-code-url-handler.desktop
-x-scheme-handler/http=google-chrome.desktop
-x-scheme-handler/https=google-chrome.desktop
-x-scheme-handler/lmstudio=lmstudio.desktop
-x-scheme-handler/unknown=google-chrome.desktop
-x-scheme-handler/clawd=clawd_on_desk.appimage_0_14_0.desktop
-x-scheme-handler/claude=com.anthropic.Claude.desktop
-x-scheme-handler/hermes=Hermes.desktop
-
 [Added Associations]
 application/x-shellscript=org.kde.kate.desktop;kitty-open.desktop;org.kde.kwrite.desktop;vim.desktop;nvim.desktop;
 image/avif=com.interversehq.qView.desktop;dms-open.desktop;
@@ -31,12 +5,39 @@ image/bmp=com.interversehq.qView.desktop;dms-open.desktop;
 image/gif=dms-open.desktop;com.interversehq.qView.desktop;
 image/heif=com.interversehq.qView.desktop;
 image/jpeg=com.interversehq.qView.desktop;dms-open.desktop;
-image/png=com.interversehq.qView.desktop;dms-open.desktop;
+image/png=com.interversehq.qView.desktop;org.kde.krita.desktop;dms-open.desktop;
 image/svg+xml=dms-open.desktop;com.interversehq.qView.desktop;
 image/webp=com.interversehq.qView.desktop;dms-open.desktop;
 inode/directory=org.gnome.Nautilus.desktop;org.kde.dolphin.desktop;dms-open.desktop;yazi.desktop;
+text/csv=libreoffice-calc.desktop;
 text/x-shellscript=org.kde.kwrite.desktop;org.kde.kate.desktop;kitty-open.desktop;vim.desktop;nvim.desktop;
 x-scheme-handler/clash=clash-verge.desktop;
 x-scheme-handler/clash-verge=clash-verge.desktop;
 
-[Removed Associations]
+[Default Applications]
+application/x-shellscript=org.kde.kate.desktop
+image/avif=com.interversehq.qView.desktop
+image/bmp=com.interversehq.qView.desktop
+image/gif=com.interversehq.qView.desktop
+image/heif=com.interversehq.qView.desktop
+image/jpeg=com.interversehq.qView.desktop
+image/png=com.interversehq.qView.desktop;
+image/svg+xml=com.interversehq.qView.desktop
+image/webp=com.interversehq.qView.desktop
+inode/directory=org.kde.dolphin.desktop
+text/csv=libreoffice-calc.desktop;
+text/html=google-chrome.desktop
+text/x-shellscript=org.kde.kwrite.desktop
+x-scheme-handler/about=google-chrome.desktop
+x-scheme-handler/ccswitch=cc-switch-handler.desktop
+x-scheme-handler/clash=clash-verge.desktop;
+x-scheme-handler/clash-verge=clash-verge.desktop;
+x-scheme-handler/claude=com.anthropic.Claude.desktop
+x-scheme-handler/claude-cli=claude-code-url-handler.desktop
+x-scheme-handler/clawd=clawd_on_desk.appimage_0_14_0.desktop
+x-scheme-handler/codex=chatgpt.desktop
+x-scheme-handler/hermes=Hermes.desktop
+x-scheme-handler/http=google-chrome.desktop
+x-scheme-handler/https=google-chrome.desktop
+x-scheme-handler/lmstudio=lmstudio.desktop
+x-scheme-handler/unknown=google-chrome.desktop

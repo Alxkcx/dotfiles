@@ -152,3 +152,6 @@ export PATH="$HOME/.local/bin:$PATH"
 
 # npm global dir
 export PATH="$HOME/.npm-global/bin:$PATH"
+
+# opencode: 禁用启动时拉取模型目录(3.4MB),避免卡启动
+export OPENCODE_DISABLE_MODELS_FETCH=1

@@ -6,3 +6,5 @@ Comment=CC Switchstartup script
 Exec=/usr/bin/cc-switch 
 StartupNotify=false
 Terminal=false
+Hidden=false
+

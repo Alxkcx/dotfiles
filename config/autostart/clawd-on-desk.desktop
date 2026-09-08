@@ -1,7 +1,0 @@
-[Desktop Entry]
-Type=Application
-Name=Clawd on Desk
-Exec="/home/Alexkazx/AppImages/clawd_on_desk.appimage_0_14_0.appimage"
-Hidden=false
-NoDisplay=false
-X-GNOME-Autostart-enabled=true

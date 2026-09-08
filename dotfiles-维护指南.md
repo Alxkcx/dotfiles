@@ -93,6 +93,7 @@ matugen 定期重新生成配色，会修改：gtk-3.0/gtk-4.0、kitty、starshi
 - `~/.config/systemd/` 目录**不能整个符号链接**（里面有 pipewire 等系统链接）。`config/systemd/user/` 下的文件（`tt-sync.service`、`plasma-xdg-desktop-portal-kde.service.d/override.conf`）由 Makefile 的 install/uninstall **逐文件符号链接**，新增 unit 时把文件放进 `config/systemd/user/` 即可，不要改回整目录链接
 - `config/mimeapps.list` 是符号链接（2026-08 起纳管），KDE 会不时重写它，产生 `sync:` 提交属正常 churn
 - `config/starship.toml` 是 matugen 输出但**保留提交**（模板在 `config/matugen/templates/starship-colors.toml`）
+- **KDE 应用配置刻意不进仓库**（2026-08 决定）：`kwinrc`/`kwinrulesrc`/`konsolerc`/`dolphinrc`/`kdeglobals`/`kcmfonts`/`plasmashellrc` 等——KDE 频繁重写导致 churn，且含会话状态（`kactivitymanagerdrc` 等）。维持现状，勿主动建议纳管
 
 ## 5. 全新装机
 

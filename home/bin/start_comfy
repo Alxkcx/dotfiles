@@ -31,7 +31,6 @@ export TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=1
 
 # --- 5) 启动 ComfyUI ---
 python main.py \
-  --listen 0.0.0.0 \
   --enable-cors-header "*" \
   --output-directory "/mnt/F/Comfyui/output/" \
   --preview-method auto \
@@ -43,4 +42,5 @@ python main.py \
   --bf16-vae \
   --auto-launch \
   --enable-manager \
-  --enable-manager-legacy-ui
+  --enable-manager-legacy-ui \
+  --listen 0.0.0.0

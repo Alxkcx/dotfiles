@@ -6,3 +6,5 @@ Comment=Clash Vergestartup script
 Exec=/usr/bin/clash-verge 
 StartupNotify=false
 Terminal=false
+Hidden=false
+

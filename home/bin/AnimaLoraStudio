@@ -1,0 +1,23 @@
+#!/usr/bin/env bash
+# 启动 AnimaLoraStudio (LoRA 训练流水线)
+# 部署位置: /mnt/D/AI_Env/AnimaLoraStudio  → http://127.0.0.1:8765/
+# 参数原样透传给 studio.sh, 如: AnimaLoraStudio --mirror / AnimaLoraStudio run --no-browser
+
+STUDIO_DIR="/mnt/D/AI_Env/AnimaLoraStudio"
+
+if [ ! -x "$STUDIO_DIR/studio.sh" ]; then
+    echo "AnimaLoraStudio: 未找到 $STUDIO_DIR/studio.sh" >&2
+    exit 1
+fi
+
+cd "$STUDIO_DIR" || exit 1
+
+# onnxruntime-gpu(CUDA 12 build)需要 cu12 系 CUDA 库;系统 /opt/cuda 是 13.x
+# 会被 Studio 的 preload 检测误判为"系统 CUDA 完整"而跳过 → 打标静默降 CPU。
+# 把 venv 里 torch 自带的 nvidia cu12 库目录加到搜索路径前面解决。
+NVIDIA_LIBS=$(ls -d "$STUDIO_DIR"/venv/lib/python3.13/site-packages/nvidia/*/lib 2>/dev/null | tr '\n' ':')
+if [ -n "$NVIDIA_LIBS" ]; then
+    export LD_LIBRARY_PATH="${NVIDIA_LIBS}${LD_LIBRARY_PATH:-}"
+fi
+
+exec ./studio.sh "$@"
