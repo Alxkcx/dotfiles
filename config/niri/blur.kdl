@@ -21,12 +21,15 @@ window-rule {
         blur true
     }
 }
-// clawd-on-desk 桌宠窗口覆盖：实时透明 + 无模糊
+// clawd-on-desk 桌宠窗口覆盖：实时透明 + 无模糊 + 无阴影
 window-rule {
     match app-id=r#"^clawd-on-desk$"#
     background-effect {
         xray false
         blur false
+    }
+    shadow {
+        off
     }
 }
 // fuzzel专属的layer规则
