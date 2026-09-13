@@ -166,8 +166,10 @@ binds {
     Mod+Alt+R hotkey-overlay-title="重置侧边栏 Reorder Sidebar" { spawn "niri-sidebar" "reorder"; }
     Mod+Alt+X { spawn "niri-sidebar" "flip"; }
     Mod+Alt+Z hotkey-overlay-title="展开/收起侧边栏 Toggle Sidebar" { spawn "niri-sidebar" "toggle-visibility"; }
+    Mod+Z hotkey-overlay-title="星环启动器 Orbit Launcher" { spawn "~/.config/niri/scripts/orbit-launcher.py"; }
     Mod+B hotkey-overlay-title="浏览器 Browser" { spawn "google-chrome-stable"; }
     Mod+E hotkey-overlay-title="文档管理器 Filemanager" { spawn-sh "XDG_CURRENT_DESKTOP=KDE KDE_SESSION_VERSION=6 QT_QPA_PLATFORMTHEME=kde dolphin"; }
+    Mod+Shift+Period hotkey-overlay-title="Emoji表情 Emoji Picker" { spawn "plasma-emojier"; }
     Mod+Escape hotkey-overlay-title="任务管理器 Task Manager" { spawn "missioncenter"; }
     Mod+F1 hotkey-overlay-title="开关输入法 Toggle fcitx" { spawn-sh "pkill fcitx5 || fcitx5 "; }
     Mod+F3 hotkey-overlay-title="录屏 Screen record" { spawn "shorin-screenrec-menu"; }

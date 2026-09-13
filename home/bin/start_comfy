@@ -42,5 +42,4 @@ python main.py \
   --bf16-vae \
   --auto-launch \
   --enable-manager \
-  --enable-manager-legacy-ui \
-  --listen 0.0.0.0
+  --enable-manager-legacy-ui

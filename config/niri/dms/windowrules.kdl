@@ -41,7 +41,6 @@ window-rule {
 // @id=wr_1785475177688906687 @name=kitty
 window-rule {
     match app-id="^kitty$"
-    open-maximized true
 }
 
 // @id=wr_1785582845914519316 @name=com.interversehq.qView
@@ -53,5 +52,17 @@ window-rule {
 // @id=dms-floating-windows @name=DMS Floating Windows
 window-rule {
     match app-id="^com.danklinux.dms$"
+    open-floating true
+}
+
+// @id=wr_1789118884664194746 @name=QQ
+window-rule {
+    match app-id="^QQ$"
+    open-floating true
+}
+
+// @id=wr_1789124007468061093 @name=org.kde.plasma.emojier
+window-rule {
+    match app-id="^org.kde.plasma.emojier$"
     open-floating true
 }

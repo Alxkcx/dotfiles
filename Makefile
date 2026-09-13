@@ -14,7 +14,7 @@ HOME_DIR    := $(DOTFILES_DIR)/home
 CONFIGS := kitty niri fish fuzzel fastfetch btop matugen yazi mpv satty \
            pacseek fontconfig gtk-3.0 gtk-4.0 qt5ct qt6ct xsettingsd \
            xdg-desktop-portal environment.d cava fcitx5 nvim starship.toml \
-           autostart chrome-flags.conf qq-flags.conf mimeapps.list user-dirs.dirs
+           autostart chrome-flags.conf mimeapps.list user-dirs.dirs
 
 # All items under home/ to symlink into ~/
 HOMEFILES := .zshrc .zprofile .bash_profile .profile .gitconfig .gtkrc-2.0 \

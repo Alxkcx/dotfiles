@@ -24,7 +24,7 @@
 │   ├── kitty niri fcitx5 fish fuzzel fastfetch btop matugen
 │   ├── yazi mpv satty pacseek fontconfig gtk-3.0 gtk-4.0 qt5ct
 │   ├── qt6ct xsettingsd environment.d cava nvim xdg-desktop-portal
-│   ├── autostart chrome-flags.conf qq-flags.conf mimeapps.list user-dirs.dirs
+│   ├── autostart chrome-flags.conf mimeapps.list user-dirs.dirs
 │   └── systemd/user/      # 逐文件符号链接（见 4.5）
 ├── home/                  # 符号链接到 ~/
 │   ├── dotfiles + bin/
