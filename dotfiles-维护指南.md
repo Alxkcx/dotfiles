@@ -7,9 +7,9 @@
 | 项 | 值 |
 |---|---|
 | 本地路径 | `~/dotfiles` |
-| Git remote | `git@github.com:alexkazx23-beep/dotfiles.git`（SSH） |
+| Git remote | `https://github.com/Alxkcx/dotfiles.git`（HTTPS，凭据由 gh 托管，见 4.6） |
 | 默认分支 | `main` |
-| 本地 user.name | `alexkazx23-beep` |
+| 本地 user.name | `alexkazx23-beep`（GitHub 账号旧名，2026 已更名为 `Alxkcx`；署名沿用旧名，归属正常） |
 | 本地 user.email | `alexkazx23@users.noreply.github.com` |
 | 结构 | `config/` → `~/.config/`，`home/` → `~/`，符号链接管理 |
 
@@ -57,15 +57,17 @@ git fetch
 
 ## 3. 网络 / 推送问题（重要）
 
+> **2026-09-13 更新**：`origin` 现为 HTTPS `https://github.com/Alxkcx/dotfiles.git`，推送凭据由 `gh` 凭据助手提供（见 4.6），**默认路径已不走 SSH**。下面这段 SSH 假 IP 问题只在仍使用 SSH remote 时才需处理。
+
 **现象**：偶尔会 `Connection closed by fdfe:dcba:9876::1e port 22` 或 push 一直卡住（假 IP 劫持）。
 
 **原因**：Clash Verge Fake-IP 模式偶尔劫持 DNS / 22 端口。DNS 恢复后 SSH 仍可能连不上。
 
 **fallback（用 HTTPS + 已存 token 推送）**：
 ```bash
-cd ~/dotfiles && git -c http.proxy= -c https.proxy= push https://github.com/alexkazx23-beep/dotfiles.git main
+cd ~/dotfiles && git -c http.proxy= -c https.proxy= push https://github.com/Alxkcx/dotfiles.git main
 ```
-HTTPS 凭据已存（credential helper 里有 token）。SSH 不通时直接用这一条；如果 DNS 也被劫持，先去 Clash 把 `github.com` 加直连或关系统代理。
+HTTPS 凭据由 `gh` 托管（`~/.config/gh/hosts.yml`，见 4.6）。SSH 不通时直接用这一条；如果 DNS 也被劫持，先去 Clash 把 `github.com` 加直连或关系统代理。
 
 ## 4. 已知的坑与约定（不要破坏）
 
@@ -94,6 +96,21 @@ matugen 定期重新生成配色，会修改：gtk-3.0/gtk-4.0、kitty、starshi
 - `config/mimeapps.list` 是符号链接（2026-08 起纳管），KDE 会不时重写它，产生 `sync:` 提交属正常 churn
 - `config/starship.toml` 是 matugen 输出但**保留提交**（模板在 `config/matugen/templates/starship-colors.toml`）
 - **KDE 应用配置刻意不进仓库**（2026-08 决定）：`kwinrc`/`kwinrulesrc`/`konsolerc`/`dolphinrc`/`kdeglobals`/`kcmfonts`/`plasmashellrc` 等——KDE 频繁重写导致 churn，且含会话状态（`kactivitymanagerdrc` 等）。维持现状，勿主动建议纳管
+
+### 4.6 密钥存放约定（重要）
+**本仓库是 public，任何 token / 私钥 / 密码都不得写进 `home/` 或 `config/`。**
+
+- GitHub token 存放在 `~/.config/gh/hosts.yml`（权限 `0600`），**不在仓库内**。`gh` 自己读它，`git` 通过 `~/.gitconfig` 里的 `credential.https://github.com.helper = !gh auth git-credential` 也读它，所以 HTTPS 推送不需要任何环境变量
+- **不要**再往 `.zshrc` 里写 `export GH_TOKEN=...`。2026-09-13 已移除，此前它明文躺在权限 0644 的文件里
+- `gh` 在有 keyring 的机器上默认把 token 存 keyring；若要让它落到文件（跨环境更稳），直接把 `oauth_token` 写进 `hosts.yml` 即可，`gh auth status` 会显示来源为该文件路径
+- 想确认凭据到底来自哪里：把 `~/.config/gh/hosts.yml` 临时移走再跑 `gh auth status`，若立刻显示未登录，说明文件才是真实来源
+- **推送前体检**：
+  ```bash
+  cd ~/dotfiles
+  grep -rInE "ghp_[A-Za-z0-9]{20,}|github_pat_|sk-[A-Za-z0-9]{20,}|BEGIN [A-Z ]*PRIVATE KEY" . --exclude-dir=.git
+  git log --all -S"ghp_" --oneline
+  ```
+- `.zshrc` 自 2026-09-13 起是符号链接 → `~/dotfiles/home/.zshrc`，与 `home/` 下其他文件一致，由 `make install` 维护。**直接编辑 `~/.zshrc` 等于编辑仓库文件**，注意别再把密钥写进去
 
 ## 5. 全新装机
 
