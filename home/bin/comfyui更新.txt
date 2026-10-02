@@ -1,4 +1,4 @@
-cd ~/ComfyUI
+cd ~/AI_Workspace/ComfyUI-Desktop/ComfyUI-Installs/Comfyui_/ComfyUI
 
 # 更新 ComfyUI
 git pull

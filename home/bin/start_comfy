@@ -8,10 +8,10 @@ export no_proxy="localhost,127.0.0.1,192.168.31.54"
 echo "✅ 终端代理已开启 (Port: 7890)"
 
 # --- 2) 进入目录并激活环境 ---
-cd "$HOME/AI_Workspace/ComfyUI" || { echo "❌ 找不到 ComfyUI 目录"; exit 1; }
+cd "$HOME/AI_Workspace/ComfyUI-Desktop/ComfyUI-Installs/Comfyui_/ComfyUI" || { echo "❌ 找不到 ComfyUI 目录"; exit 1; }
 
-if [[ -f "venv/bin/activate" ]]; then
-    source venv/bin/activate
+if [[ -f ".venv/bin/activate" ]]; then
+    source .venv/bin/activate
     echo "✅ 已激活虚拟环境"
 else
     echo "❌ 找不到 venv"
@@ -31,15 +31,8 @@ export TORCH_ALLOW_TF32_CUBLAS_OVERRIDE=1
 
 # --- 5) 启动 ComfyUI ---
 python main.py \
-  --enable-cors-header "*" \
   --output-directory "/mnt/F/Comfyui/output/" \
-  --preview-method auto \
-  --async-offload \
-  --use-sage-attention \
-  --enable-triton-backend \
-  --supports-fp8-compute \
-  --fast-disk \
-  --bf16-vae \
-  --auto-launch \
   --enable-manager \
-  --enable-manager-legacy-ui
+  --auto-launch \
+  --enable-manager-legacy-ui \
+  --use-sage-attention

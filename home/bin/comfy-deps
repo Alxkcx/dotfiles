@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -e
 
-COMFY="$HOME/AI_Workspace/ComfyUI"
+COMFY="$HOME/AI_Workspace/ComfyUI-Desktop/ComfyUI-Installs/Comfyui_/ComfyUI"
 
 cd "$COMFY/custom_nodes"
 
@@ -16,6 +16,6 @@ do
         echo "${dir#./}"
         echo "======================================="
 
-        uv pip install -r "$dir/requirements.txt"
+        uv pip install --python "$COMFY/.venv/bin/python" -r "$dir/requirements.txt"
     fi
 done

@@ -30,10 +30,10 @@ if [[ -z "$KIO_BASE" ]]; then
 fi
 
 # --- 4) 进入目录并激活环境 ---
-cd "$HOME/AI_Workspace/ComfyUI" || { echo "❌ 找不到 ComfyUI 目录"; exit 1; }
+cd "$HOME/AI_Workspace/ComfyUI-Desktop/ComfyUI-Installs/Comfyui_/ComfyUI" || { echo "❌ 找不到 ComfyUI 目录"; exit 1; }
 
-if [[ -f "venv/bin/activate" ]]; then
-    source venv/bin/activate
+if [[ -f ".venv/bin/activate" ]]; then
+    source .venv/bin/activate
     echo "✅ 已激活虚拟环境"
 else
     echo "❌ 找不到 venv"

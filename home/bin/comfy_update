@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
 
-COMFY="$HOME/AI_Workspace/ComfyUI"
+COMFY="$HOME/AI_Workspace/ComfyUI-Desktop/ComfyUI-Installs/Comfyui_/ComfyUI"
 cd "$COMFY"
 
-source venv/bin/activate
+source .venv/bin/activate
 
 # 代理
 export http_proxy="http://127.0.0.1:7890"
@@ -30,7 +30,14 @@ cleanup() {
 trap cleanup EXIT
 
 echo "==> Pulling latest ComfyUI..."
-git pull --autostash || { echo "git pull 失败，可能是网络问题"; exit 1; }
+# ⚠️ 新实例是 Comfy Desktop 的 standalone 版，ComfyUI 常驻 detached HEAD（当前 v0.38.0），
+#    detached 状态下 git pull 不适用；Desktop 自己会更新（autoUpdateComfyUI=true）。
+if git symbolic-ref -q HEAD >/dev/null; then
+    git pull --autostash || { echo "git pull 失败，可能是网络问题"; exit 1; }
+else
+    echo "  ⚠️ 当前是 detached HEAD（Desktop standalone 的常态），已跳过 git pull。"
+    echo "     要手动更新：用 Desktop 界面的「更新」，或 git fetch --tags && git checkout <最新 v*.*.*>"
+fi
 
 echo "==> Updating core requirements..."
 uv pip install -r requirements.txt
