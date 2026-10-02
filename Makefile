@@ -4,6 +4,7 @@
 #   make uninstall - Remove symlinks from $HOME
 #   make update    - Git pull and reinstall
 #   make packages  - Export current package lists
+#   make check     - 审计系统侧软链是否都指向仓库
 
 DOTFILES_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
 CONFIG_DIR  := $(DOTFILES_DIR)/config
@@ -17,10 +18,16 @@ CONFIGS := kitty niri fish fuzzel fastfetch btop matugen yazi mpv satty \
            autostart chrome-flags.conf mimeapps.list user-dirs.dirs
 
 # All items under home/ to symlink into ~/
-HOMEFILES := .zshrc .zprofile .bash_profile .profile .gitconfig .gtkrc-2.0 \
+# 注意：.gtkrc-2.0 不在列表内（见 维护指南 4.5）——KDE 的 kde-gtk-config 每次同步
+# GTK 外观都会用 temp+rename 重写它，软链会被打回普通文件，还会在 ~ 留下 .bak。
+# 仓库里仍保留 home/.gtkrc-2.0 作为快照，改动后手动同步。
+HOMEFILES := .zshrc .zprofile .bash_profile .profile .gitconfig \
              .Xresources bin
 
-.PHONY: install uninstall update packages
+.PHONY: install uninstall update packages check
+
+check:
+	@bash scripts/audit-links.sh
 
 install:
 	@echo "==> Installing dotfiles..."

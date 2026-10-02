@@ -96,6 +96,14 @@ matugen 定期重新生成配色，会修改：gtk-3.0/gtk-4.0、kitty、starshi
 - `config/mimeapps.list` 是符号链接（2026-08 起纳管），KDE 会不时重写它，产生 `sync:` 提交属正常 churn
 - `config/starship.toml` 是 matugen 输出但**保留提交**（模板在 `config/matugen/templates/starship-colors.toml`）
 - **KDE 应用配置刻意不进仓库**（2026-08 决定）：`kwinrc`/`kwinrulesrc`/`konsolerc`/`dolphinrc`/`kdeglobals`/`kcmfonts`/`plasmashellrc` 等——KDE 频繁重写导致 churn，且含会话状态（`kactivitymanagerdrc` 等）。维持现状，勿主动建议纳管
+- **`~/.gtkrc-2.0` 不能符号链接**（2026-10-02 实测确认，已从 Makefile `HOMEFILES` 移除）。KDE 的 `kde-gtk-config`（kded6 的 `gtkconfig` 模块）每次同步 GTK 外观都会重写这个文件，且写入方式是 temp+rename，**软链会被替换成普通文件**，同时 `make install` 还会在 `~` 留一个 `.bak.时间戳`。仓库里的 `home/.gtkrc-2.0` 只作快照，系统侧改了要手动 `cp ~/.gtkrc-2.0 ~/dotfiles/home/` 同步。一句话复现：
+  ```bash
+  ln -sfn ~/dotfiles/home/.gtkrc-2.0 ~/.gtkrc-2.0
+  busctl --user call org.kde.kded6 /kded org.kde.kded6 unloadModule s gtkconfig
+  busctl --user call org.kde.kded6 /kded org.kde.kded6 loadModule   s gtkconfig
+  ls -la ~/.gtkrc-2.0   # 3 秒后变回普通文件
+  ```
+- **`gtk-3.0/colors.css`、`gtk-4.0/colors.css` 由 KDE 生成**（指纹：内容里是 `@define-color *_breeze`）。`kde-gtk-config` 依据当前 KDE 配色方案重写，随「系统设置 → 外观」变更而变；matugen **不**产生这两个文件（matugen 输出的是 `**/dank-colors.css`，已被 gitignore）。两者同时出现改动时按 §4.2 处理，直接 `sync:` 提交
 
 ### 4.6 密钥存放约定（重要）
 **本仓库是 public，任何 token / 私钥 / 密码都不得写进 `home/` 或 `config/`。**
@@ -131,6 +139,7 @@ Rime 字典 / yazi 包等需要重新装（包清单不包含构建产物）。
 | `make uninstall` | 只删指向本仓库的链接 |
 | `make update` | `git pull && make install` |
 | `make packages` | 导出包清单到 `packages/` |
+| `make check` | 审计系统侧软链（`scripts/audit-links.sh`），报「指向别处 / 被打回普通文件 / 缺失」；退出码非 0 表示有异常 |
 
 ## 7. 部署后
 
