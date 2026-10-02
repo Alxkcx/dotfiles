@@ -6,8 +6,8 @@
 
 ```
 ~/dotfiles/
-├── Makefile          # install / uninstall / update / packages
-├── packages/         # 包清单 (official.txt + aur.txt)
+├── Makefile          # install / uninstall / update / packages / check
+├── packages/         # 包清单 (official.txt + aur.txt + flatpak.txt)
 ├── scripts/          # 辅助脚本
 ├── config/           # → ~/.config/
 │   ├── kitty/        # 终端模拟器
@@ -44,7 +44,7 @@
 ## 安装
 
 ```bash
-git clone https://github.com/Alexkazx/dotfiles.git ~/dotfiles
+git clone https://github.com/Alxkcx/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 make install
 ```
@@ -73,10 +73,10 @@ make update
 
 ```bash
 # 1. 克隆 dotfiles
-git clone https://github.com/Alexkazx/dotfiles.git ~/dotfiles
+git clone https://github.com/Alxkcx/dotfiles.git ~/dotfiles
 cd ~/dotfiles
 
-# 2. 恢复所有包 (官方 + AUR)
+# 2. 恢复所有包 (官方 + AUR + Flatpak)
 bash scripts/restore-packages.sh
 
 # 3. 创建符号链接
@@ -94,7 +94,17 @@ matugen image /path/to/your/wallpaper.png
 make packages
 ```
 
-这会将当前系统上所有显式安装的包导出到 `packages/official.txt` 和 `packages/aur.txt`。
+这会将当前系统上显式安装的包导出到三个清单：
+
+| 文件 | 内容 | 导出命令 |
+|---|---|---|
+| `packages/official.txt` | 官方源显式包 | `pacman -Qqen` |
+| `packages/aur.txt` | AUR 显式包 | `pacman -Qqem` |
+| `packages/flatpak.txt` | Flatpak 应用，每行 `app_id<TAB>origin` | `flatpak list --app` |
+
+系统上没装 flatpak 时会跳过、不生成 `flatpak.txt`。三份清单都由 `scripts/restore-packages.sh` 依次恢复（flatpak 层会先补 `flathub` remote 再逐个 `flatpak install -y`）。
+
+> 注：`flatpak list` 不带 `--no-headers` 选项（1.18 实测会报「未知选项」），且在没有 UTF-8 locale 时**不打印列头**，所以不能用 `tail -n +2` 去表头——会误删第一条应用。导出规则按 app id 必含 `.` 过滤。
 
 ## 首次安装后需要做的事
 

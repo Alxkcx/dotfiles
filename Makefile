@@ -3,7 +3,7 @@
 #   make install   - Create symlinks from repo to $HOME
 #   make uninstall - Remove symlinks from $HOME
 #   make update    - Git pull and reinstall
-#   make packages  - Export current package lists
+#   make packages  - Export package lists (official / aur / flatpak)
 #   make check     - 审计系统侧软链是否都指向仓库
 
 DOTFILES_DIR := $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
@@ -140,4 +140,12 @@ packages:
 	@pacman -Qqem > $(DOTFILES_DIR)/packages/aur.txt
 	@echo "  official.txt: $$(wc -l < $(DOTFILES_DIR)/packages/official.txt) packages"
 	@echo "  aur.txt:      $$(wc -l < $(DOTFILES_DIR)/packages/aur.txt) packages"
+	@if command -v flatpak >/dev/null 2>&1; then \
+		LC_ALL=C flatpak list --app --columns=application,origin 2>/dev/null \
+			| awk '/\./ {printf "%s\t%s\n", $$1, ($$2 == "" ? "flathub" : $$2)}' \
+			> $(DOTFILES_DIR)/packages/flatpak.txt; \
+		echo "  flatpak.txt:  $$(grep -c . $(DOTFILES_DIR)/packages/flatpak.txt) apps"; \
+	else \
+		echo "  flatpak.txt:  skipped (flatpak not installed)"; \
+	fi
 	@echo "==> Done. Run 'make install' to symlink if not already done."

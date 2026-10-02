@@ -1,0 +1,7 @@
+com.github.tchx84.Flatseal	flathub
+com.qq.QQ	flathub
+com.tencent.WeChat	flathub
+io.github.Predidit.Kazumi	flathub
+io.github.flattool.Warehouse	flathub
+io.github.ilya_zlobintsev.LACT	flathub
+it.mijorus.gearlever	flathub

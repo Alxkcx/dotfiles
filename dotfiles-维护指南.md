@@ -29,8 +29,9 @@
 ├── home/                  # 符号链接到 ~/
 │   ├── dotfiles + bin/
 └── packages/              # 包清单，由 `make packages` 生成
-    ├── official.txt       # 官方源，约 218 个
-    └── aur.txt            # AUR，约 20 个
+    ├── official.txt       # 官方源，约 250 个
+    ├── aur.txt            # AUR，约 21 个
+    └── flatpak.txt        # Flatpak 应用，每行 `app_id<TAB>origin`
 ```
 
 ## 2. 日常 Git 工作流
@@ -161,12 +162,22 @@ grep -c __dms_bypass__ ~/.config/kdeglobals   # 必须为 0
 ## 5. 全新装机
 
 ```bash
-git clone https://github.com/alexkazx23-beep/dotfiles.git ~/dotfiles
+git clone https://github.com/Alxkcx/dotfiles.git ~/dotfiles
 cd ~/dotfiles
-bash scripts/restore-packages.sh   # 装所有包（官方 + AUR）
+bash scripts/restore-packages.sh   # 装所有包（官方 + AUR + Flatpak）
 make install                        # 符号链接
 matugen image /path/to/wallpaper.png  # 生成主题
 ```
+包清单分三层，均由 `scripts/restore-packages.sh` 依次恢复：
+
+| 清单 | 内容 | 导出方式 |
+|---|---|---|
+| `packages/official.txt` | 官方源显式包 | `pacman -Qqen` |
+| `packages/aur.txt` | AUR 显式包 | `pacman -Qqem` |
+| `packages/flatpak.txt` | Flatpak 应用，每行 `app_id<TAB>origin` | `flatpak list --app` |
+
+flatpak 层恢复时会先补 `flathub` remote，再逐个 `flatpak install -y`；系统未装 flatpak 时该文件不生成、脚本跳过。
+⚠️ 导出 flatpak 清单**不能用 `tail -n +2` 去列头**：flatpak 1.18 无 `--no-headers` 选项，且在非 UTF-8 locale 下根本不打印列头，会误删第一条应用。Makefile 里改用「app id 必含 `.`」的正则过滤。
 Rime 字典 / yazi 包等需要重新装（包清单不包含构建产物）。
 
 ## 6. Makefile 目标速查
@@ -176,7 +187,7 @@ Rime 字典 / yazi 包等需要重新装（包清单不包含构建产物）。
 | `make install` | 符号链接；已存在的目标文件自动备份 `.bak.时间戳` |
 | `make uninstall` | 只删指向本仓库的链接 |
 | `make update` | `git pull && make install` |
-| `make packages` | 导出包清单到 `packages/` |
+| `make packages` | 导出包清单到 `packages/`（official / aur / flatpak） |
 | `make check` | 审计系统侧软链（`scripts/audit-links.sh`），报「指向别处 / 被打回普通文件 / 缺失」；退出码非 0 表示有异常 |
 
 ## 7. 部署后
