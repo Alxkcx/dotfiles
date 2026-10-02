@@ -26,8 +26,10 @@ environment {
     // qt主题
     QT_QPA_PLATFORMTHEME "gtk3"
     QT_QPA_PLATFORMTHEME_QT6 "gtk3"
-    // 解决quickshell图标主题缺失问题
-    QS_ICON_THEME "Adwaita"
+    // quickshell / Qt 的按名查找图标主题。必须是真正装了 tray/panel 类图标的主题：
+    // Adwaita 只有应用图标，查不到 obs-tray 这类名字时 quickshell 会画紫黑棋盘格占位块。
+    // Tela 覆盖 obs-tray 等 panel 图标，且 Inherits=hicolor,Adwaita,breeze，不会丢覆盖。
+    QS_ICON_THEME "Tela"
     // GTK软件使用的渲染器，可以解决n卡双显卡导致的GTK应用启动缓慢问题，AMD或Intel单显卡不需要这行设置可以注释掉
     //GSK_RENDERER "gl"
     // 默认文本编辑器
@@ -187,4 +189,9 @@ include "blur.kdl"
 
 // DMS 生成的布局/间距配置
 include "dms/layout.kdl"
+
+debug {
+	// 放宽聚焦拦截，修复点击托盘程序无法跳转聚焦的问题。
+	honor-xdg-activation-with-invalid-serial
+}
 

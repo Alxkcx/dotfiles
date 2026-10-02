@@ -279,7 +279,8 @@ find "$TARGET_DIR/scalable/mimetypes" -name "x-office-presentation*.svg" -print0
 # [Group 10] Mimetypes - Audio
 find "$TARGET_DIR/scalable/mimetypes" -name "audio-x-generic*.svg" -print0 | xargs -0 -P0 sed -i "$CMD_AUDIO"
 # 4. 应用变更
-gsettings set org.gnome.desktop.interface icon-theme "$TARGET_THEME"
-flatpak override --user --env=ICON_THEME="$TARGET_THEME" 2>/dev/null || true
+# 改为写入Tela而非Adwaita-Matugen，避免OBS等Qt应用找不到panel图标（obs-tray等）
+gsettings set org.gnome.desktop.interface icon-theme "Tela"
+flatpak override --user --env=ICON_THEME="Tela" 2>/dev/null || true
 
 exit 0
