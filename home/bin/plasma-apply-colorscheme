@@ -1,0 +1,75 @@
+#!/usr/bin/env bash
+# plasma-apply-colorscheme —— 绕过「同名短路」
+#
+# 由 dotfiles 管理：home/bin/ → ~/bin/（整目录软链）。
+# 由于 dms 进程的 PATH 是 ~/.local/bin:~/bin:/usr/local/bin:/usr/bin:/bin，
+# 且 Go 的 exec.Command() 走 LookPath，DMS 调 plasma-apply-colorscheme 时命中本文件。
+#
+# 根因：kdeglobals 的 ColorScheme 已等于目标方案名时，真身只打印
+#   "…已经是当前的 Plasma 会话的主题。"
+# 然后跳过 applyScheme() 与 notifyKcmChange(PaletteChanged) —— 一个字节都不写。
+# 于是 DMS 换 accent 时 KDE 应用的强调色不刷新（切深浅色才刷新，因为方案名变了）。
+#
+# 对策：先把记录名改成一个临时名再调真身，真身便当成一次真正的切换，
+# 走完整 applyScheme + settings->save() + PaletteChanged 广播。
+# kwriteconfig6 默认不广播，运行中的应用看不到这个中间态。
+#
+# 停用：把本文件从 dotfiles/home/bin/ 删掉（或 rm ~/bin/plasma-apply-colorscheme）。
+# 需要恢复原行为时不必重启任何服务。
+#
+# 注意：DMS 若改成绝对路径调用 /usr/bin/plasma-apply-colorscheme，本文件会静默失效
+# （不报错，只是退回旧行为）。判据见 DMS 源码 core/internal/matugen 的 applyKDEColorScheme。
+#
+# 依赖：/usr/bin/plasma-apply-colorscheme、kreadconfig6、kwriteconfig6
+
+REAL=/usr/bin/plasma-apply-colorscheme
+TMPNAME=__dms_bypass__
+
+if [ ! -x "$REAL" ]; then
+    echo "plasma-apply-colorscheme: $REAL 不存在" >&2
+    exit 127
+fi
+
+# 无参数 → 原样透传
+if [ "$#" -eq 0 ]; then
+    exec "$REAL"
+fi
+
+# 选项开头（--accent-color / --list-schemes / --help …）→ 原样透传
+case "$1" in
+    -*) exec "$REAL" "$@" ;;
+esac
+
+TARGET=$1
+shift
+
+# 传的是路径（…/foo.colors）→ 真身按路径走，无同名问题，透传
+case "$TARGET" in
+    */*) exec "$REAL" "$TARGET" "$@" ;;
+esac
+
+read_cur() {
+    kreadconfig6 --file kdeglobals --group General --key ColorScheme 2>/dev/null
+}
+
+CUR=$(read_cur)
+if [ "$CUR" != "$TARGET" ]; then
+    exec "$REAL" "$TARGET" "$@"
+fi
+
+# —— 同名：骗真身一次 ——
+if ! kwriteconfig6 --file kdeglobals --group General --key ColorScheme "$TMPNAME"; then
+    # 改不动就老实透传（结果和以前一样，不会更坏）
+    exec "$REAL" "$TARGET" "$@"
+fi
+
+"$REAL" "$TARGET" "$@"
+rc=$?
+
+# 真身成功后会把名字写成 $TARGET；若它失败/被杀，别把临时名留在 kdeglobals 里
+NOW=$(read_cur)
+if [ "$NOW" = "$TMPNAME" ]; then
+    kwriteconfig6 --file kdeglobals --group General --key ColorScheme "$TARGET"
+fi
+
+exit $rc

@@ -120,6 +120,44 @@ matugen 定期重新生成配色，会修改：gtk-3.0/gtk-4.0、kitty、starshi
   ```
 - `.zshrc` 自 2026-09-13 起是符号链接 → `~/dotfiles/home/.zshrc`，与 `home/` 下其他文件一致，由 `make install` 维护。**直接编辑 `~/.zshrc` 等于编辑仓库文件**，注意别再把密钥写进去
 
+### 4.7 `plasma-apply-colorscheme` wrapper（2026-10-02 加入；仓库内唯一与系统命令同名的脚本）
+
+位置 `home/bin/plasma-apply-colorscheme` → 经整目录软链出现在 `~/bin/`。它**劫持**
+`plasma-apply-colorscheme`，用来绕过「同名短路」。
+
+**要解决的问题**：DMS 换 accent 时 KDE 应用的强调色不刷新（切深浅色却正常）。
+真身在 `kdeglobals` 的 `ColorScheme` 已等于目标方案名时，只打印
+`请求的主题"…"已经是当前的 Plasma 会话的主题。`，然后**跳过 `applyScheme()` 与
+`PaletteChanged` 广播，零字节写入**（源码 `kcms/colors/plasma-apply-colorscheme.cpp`）。
+DMS 一侧的 `applyKDEColorScheme()` 只按模式传死名字 `DankMatugenDark`/`DankMatugenLight`，
+两者判定维度错配（内容 vs 名字）→ 内容变了但名字没变 → 刷新被静默吞掉。
+
+**怎么生效**：`dms` 进程的 PATH 是 `~/.local/bin:~/bin:/usr/local/bin:/usr/bin:/bin`，
+Go 的 `exec.Command()` 走 `LookPath` → 命中 `~/bin/` 里这个脚本。
+wrapper 先把记录名改成临时名 `__dms_bypass__`（`kwriteconfig6` 默认不广播，运行中的应用
+看不到这个中间态），再调真身 → 真身当成一次真正的切换，走完整
+`applyScheme + settings->save() + PaletteChanged`。选项调用 / 路径调用 / 未知方案名一律 `exec` 透传。
+
+**验证**（⚠️ **别用 md5 判断** —— `applyScheme` 写的是同一批值，KConfig 判无改动就不 rewrite，
+md5 前后完全相同）：
+
+```bash
+stat -c %y ~/.config/kdeglobals        # 绕过成功 → mtime 会变
+(timeout 7 dbus-monitor --session "interface='org.kde.KGlobalSettings'" >/tmp/ks.log 2>&1 &)
+sleep 1; plasma-apply-colorscheme DankMatugenDark; sleep 2
+grep -A1 member=notifyChange /tmp/ks.log      # 应出现 int32 0（PaletteChanged）
+grep -c __dms_bypass__ ~/.config/kdeglobals   # 必须为 0
+```
+
+**约定**：
+- **不要**在 `~/.local/bin/` 再放同名副本。`~/.local/bin` 在 PATH 里排在 `~/bin` **前面**，
+  会永久盖住仓库版，制造「改了仓库不生效」的假象。
+- 停用 = 把本文件从 `dotfiles/home/bin/` 删掉（或 `rm ~/bin/plasma-apply-colorscheme`），
+  **不需要重启任何服务**（LookPath 每次调用现查）。
+- **DMS 升级后要复核**：若 `applyKDEColorScheme()` 改成绝对路径
+  `/usr/bin/plasma-apply-colorscheme`，wrapper 会静默失效（不报错，只是退回旧行为）。
+- 上游任一侧修好这个 bug 后，本文件就该删掉。
+
 ## 5. 全新装机
 
 ```bash
