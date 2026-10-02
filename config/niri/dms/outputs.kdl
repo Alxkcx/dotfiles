@@ -9,3 +9,9 @@ output "PNP(EXK) AMZ G25F6B-1 0000000000001" {
     }
 }
 
+output "Shenzhen KTC Technology Group H27T22S 0x00000001" {
+    mode "2560x1440@180.000"
+    scale 1.25
+    position x=0 y=0
+}
+

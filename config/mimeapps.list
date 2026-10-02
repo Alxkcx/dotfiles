@@ -1,4 +1,5 @@
 [Added Associations]
+application/pdf=google-chrome.desktop;libreoffice-draw.desktop;
 application/x-shellscript=org.kde.kate.desktop;kitty-open.desktop;org.kde.kwrite.desktop;vim.desktop;nvim.desktop;
 image/avif=com.interversehq.qView.desktop;dms-open.desktop;
 image/bmp=com.interversehq.qView.desktop;dms-open.desktop;
@@ -15,6 +16,7 @@ x-scheme-handler/clash=clash-verge.desktop;
 x-scheme-handler/clash-verge=clash-verge.desktop;
 
 [Default Applications]
+application/pdf=google-chrome.desktop;
 application/x-shellscript=org.kde.kate.desktop
 image/avif=com.interversehq.qView.desktop
 image/bmp=com.interversehq.qView.desktop
